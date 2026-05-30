@@ -1,0 +1,90 @@
+syntax = "proto3";
+package conferences;
+
+option go_package = "lms-conference-service/pb/conferences;conferences";
+
+import "generic/generic_message.proto";
+
+message Conference {
+    string id = 1;
+    string subject_class_id = 2;
+    string topic_subject_id = 3;
+    string name = 4;
+    string description = 5;
+    string start_time = 6;
+    string end_time = 7;
+    string meeting_url = 8;
+    string status = 9;
+    string updated_by = 10;
+    string updated_at = 11;
+    string created_at = 12;
+}
+
+message ConferenceList {
+    repeated Conference conferences = 1;
+    uint32 count = 2;
+}
+
+message ConferenceListInput {
+    lms_conference_services.Pagination pagination = 1;
+    string subject_class_id = 2;
+}
+
+message ConferenceInput {
+    string subject_class_id = 1;
+    string topic_subject_id = 2;
+    string name = 3;
+    string description = 4;
+    string start_time = 5;
+    string end_time = 6;
+    string meeting_url = 7;
+}
+
+message ConferenceParticipant {
+    string id = 1;
+    string conference_id = 2;
+    string student_id = 3;
+    string student_name = 4;
+    bool is_attended = 5;
+    string joined_at = 6;
+    string left_at = 7;
+    string created_at = 8;
+}
+
+message ConferenceParticipantList {
+    repeated ConferenceParticipant participants = 1;
+    uint32 count = 2;
+}
+
+message ConferenceParticipantListInput {
+    lms_conference_services.Pagination pagination = 1;
+    string conference_id = 2;
+}
+
+message ConferenceParticipantInput {
+    string conference_id = 1;
+    string student_id = 2;
+    string student_name = 3;
+}
+
+message UpdateAttendanceInput {
+    string id = 1;
+    bool is_attended = 2;
+    string joined_at = 3;
+    string left_at = 4;
+}
+
+service ConferenceService {
+    rpc List(ConferenceListInput) returns (ConferenceList);
+    rpc Get(lms_conference_services.Id) returns (Conference);
+    rpc Create(ConferenceInput) returns (Conference);
+    rpc Update(Conference) returns (Conference);
+    rpc Delete(lms_conference_services.Id) returns (lms_conference_services.BoolMessage);
+}
+
+service ConferenceParticipantService {
+    rpc List(ConferenceParticipantListInput) returns (ConferenceParticipantList);
+    rpc Create(ConferenceParticipantInput) returns (ConferenceParticipant);
+    rpc UpdateAttendance(UpdateAttendanceInput) returns (ConferenceParticipant);
+    rpc Delete(lms_conference_services.Id) returns (lms_conference_services.BoolMessage);
+}
